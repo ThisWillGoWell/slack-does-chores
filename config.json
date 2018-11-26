@@ -1,0 +1,16 @@
+{
+  "chores":{
+    "trash": {
+      "alert_at": "*/2 * * * *",
+      "complete_by": "* * * * *",
+      "title": "Take Out Trash",
+      "assigned_to": "will.gowell"
+    }
+  },
+  "users": {
+    "will.gowell": {
+      "name": "William Gowell",
+      "slack_id": "UEBULGH8F"
+    }
+  }
+}
