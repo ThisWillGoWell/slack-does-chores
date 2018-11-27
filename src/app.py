@@ -1,3 +1,5 @@
+import urllib
+
 from flask import Flask, request, Response
 from src.chores import Manger
 from src.slack import Bot
@@ -10,7 +12,10 @@ class App:
     @staticmethod
     @app.route('/chore/api', methods=['POST'])
     def api():
-        App.app.logger.info(request.get_data())
+        data = request.get_data()
+        data = urllib.unquote(data).decode('utf8')
+
+        App.app.logger.info(data )
         return Response(status=200)
 
     def __init__(self):
