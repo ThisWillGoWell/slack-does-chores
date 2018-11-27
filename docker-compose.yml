@@ -3,6 +3,8 @@ services:
   server:
     restart: always
     build: .
+    ports:
+      - 8080:8080
     container_name: chore_server
     environment:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
