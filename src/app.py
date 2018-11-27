@@ -13,5 +13,5 @@ class App:
         print(request.form)
 
     def __init__(self):
-        self.app.run(host='0.0.0.0', port=8080)
+        self.app.run(host='0.0.0.0', port=8080, debug=True)
 
