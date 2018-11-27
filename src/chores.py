@@ -76,7 +76,6 @@ class Manger(object):
 
     @staticmethod
     def generate_json(chore):
-        button_str = ""
         with open('chore_buttons.json') as f:
             button_str = f.read()
         if button_str == '':
@@ -84,6 +83,10 @@ class Manger(object):
         button_str = button_str % chore.name
         return json.loads(button_str)
 
+    def button_response(self, response):
+        chore = self.chores[response['callback_id']]
+        if response['actions'][0]['value'] == 'complete':
+            self.chore_complete(chore)
 
 class ChoreState:
     @staticmethod
