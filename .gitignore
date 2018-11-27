@@ -1,3 +1,5 @@
 .idea
 venv
 secrets.env
+__python__
+*.pyc
