@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 . $(pwd)/secrets.env
 docker-compose build
 docker-compose up -d
