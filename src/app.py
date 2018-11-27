@@ -11,6 +11,7 @@ class App:
     @app.route('/chore/api', methods=['POST'])
     def api():
         print(request.form)
+        return 200
 
     def __init__(self):
         self.app.run(host='0.0.0.0', port=8080, debug=True)
