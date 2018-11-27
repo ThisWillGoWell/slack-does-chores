@@ -23,7 +23,7 @@ services:
     restart: always
 
   letsencrypt:
-    container_name: chore
+    container_name: letsencrypt
     build:
       context: docker
       dockerfile: Dockerfile.certs

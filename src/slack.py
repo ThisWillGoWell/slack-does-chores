@@ -16,7 +16,7 @@ class Bot(object):
             self.name = name
             self.real_name = real_name
 
-    def __init__(self, deafult_channel='general'):
+    def __init__(self, default_channel='general'):
         self.commands = {}
         self.slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
         self.users = {}
@@ -24,10 +24,10 @@ class Bot(object):
             info = self.slack_client.api_call("auth.test")
             self.bot_id = self.slack_client.api_call("auth.test")["user_id"]
             self._populate_users()
-            chennels = self.slack_client.api_call("channels.list")
+            channels = self.slack_client.api_call("channels.list")
             self.default_channel = ""
-            for channel in chennels['channels']:
-                if channel['name'] == deafult_channel:
+            for channel in channels['channels']:
+                if channel['name'] == default_channel:
                     self.default_channel = channel['id']
             if self.default_channel == '':
                 raise Exception('channel not found')
