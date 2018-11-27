@@ -11,7 +11,7 @@ class App:
     @app.route('/chore/api', methods=['POST'])
     def api():
         App.app.logger.info(request.json)
-        return Response(status=404)
+        return Response(status=200)
 
     def __init__(self):
         self.app.run(host='0.0.0.0', port=8080, debug=True)
