@@ -1,3 +1,4 @@
+import json
 import urllib
 
 from flask import Flask, request, Response
@@ -12,10 +13,8 @@ class App:
     @staticmethod
     @app.route('/chore/api', methods=['POST'])
     def api():
-        data = request.get_data()
-        data = urllib.unquote(data).decode('utf8')
-
-        App.app.logger.info(data )
+        form_json = json.loads(request.form["payload"])
+        App.app.logger.info(str(form_json))
         return Response(status=200)
 
     def __init__(self):
