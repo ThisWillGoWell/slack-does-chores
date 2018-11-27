@@ -45,7 +45,7 @@ class Manger(object):
                 elif chore.state == ChoreState.alerted():
                     if now > chore.next_complete:
                         self.chore_failed(chore)
-                    elif datetime.now() > chore.last_alert_at + timedelta(seconds=10):
+                    elif now > chore.last_alert_at + timedelta(seconds=10):
                         self.chore_alert(chore)
                 elif chore.state == ChoreState.complete():
                     if now > chore.next_complete:
@@ -54,10 +54,6 @@ class Manger(object):
             self.chore_lock.release()
             sleep(1)
 
-    def mark_complete(self, chore_name):
-        self.chore_lock.acquire()
-        self.chore_complete(self.chores[chore_name])
-        self.chore_lock.release()
 
     def chore_alert(self, chore):
         chore.state = ChoreState.alerted()
@@ -72,7 +68,7 @@ class Manger(object):
 
     def chore_complete(self, chore):
         self.slack_client.send_message("chore " + chore.title + " marked as complete")
-        chore.state = ChoreState.complete()
+        chore.complete()
 
     @staticmethod
     def generate_json(chore):
@@ -84,9 +80,11 @@ class Manger(object):
         return json.loads(button_str)
 
     def button_response(self, response):
+        self.chore_lock.acquire()
         chore = self.chores[response['callback_id']]
         if response['actions'][0]['value'] == 'complete':
             self.chore_complete(chore)
+        self.chore_lock.release()
 
 class ChoreState:
     @staticmethod

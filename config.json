@@ -1,8 +1,8 @@
 {
   "chores":{
     "trash": {
-      "alert_at": "*/2 * * * *",
-      "complete_by": "* * * * *",
+      "alert_at": "* * * * *",
+      "complete_by": "*/2 * * * *",
       "title": "Take Out Trash",
       "assigned_to": "will.gowell"
     }

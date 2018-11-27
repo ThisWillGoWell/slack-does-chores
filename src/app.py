@@ -13,9 +13,12 @@ class App:
     @staticmethod
     @app.route('/chore/api', methods=['POST'])
     def api():
-        form_json = json.loads(request.form["payload"])
-        App.app.logger.info(str(form_json))
-        App.manager.button_response(form_json)
+        try:
+            form_json = json.loads(request.form["payload"])
+            App.app.logger.info(str(form_json))
+            App.manager.button_response(form_json)
+        except KeyError:
+            App.manager.button_response(request.get_json())
         return Response(status=200)
 
     def __init__(self):
