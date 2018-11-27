@@ -10,7 +10,7 @@ class App:
     @staticmethod
     @app.route('/chore/api', methods=['POST'])
     def api():
-        print(request.form)
+        print(request.json)
         return Response(status=200)
 
     def __init__(self):
