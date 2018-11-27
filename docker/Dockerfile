@@ -4,7 +4,6 @@ WORKDIR /app/
 RUN pip install -r requirments.txt
 COPY app.py /app/
 COPY /src /app/src
-COPY config.json /app/
-COPY /templates /app/template
+COPY *.json /app/
 CMD ["python", "app.py"]
 
