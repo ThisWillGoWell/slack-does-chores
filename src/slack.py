@@ -79,13 +79,16 @@ class Bot(object):
                 self.send_message(message, channel)
                 print("Bot mentioned: ", message, 'channel: ', channel)
 
-    def send_message(self, msg, channel=''):
+    def send_message(self, msg, attachments=None, channel=''):
         if channel == '':
             channel = self.default_channel
+        if not attachments:
+            attachments = []
         self.slack_client.api_call(
             "chat.postMessage",
             channel=channel,
-            text=msg
+            text=msg,
+            attachments=attachments
         )
 
     def register_command(self, command, func):

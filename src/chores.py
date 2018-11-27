@@ -39,7 +39,7 @@ class Manger(object):
             now = datetime.now()
             for chore in self.chores.values():
                 if chore.state == ChoreState.idle():
-                    if now > chore.next_alert:
+                    if now > chore.next_alert or True:
                         self.chore_alert(chore)
 
                 elif chore.state == ChoreState.alerted():
@@ -61,7 +61,8 @@ class Manger(object):
 
     def chore_alert(self, chore):
         chore.state = ChoreState.alerted()
-        self.slack_client.send_message("hey " + chore.user.name + " do " + chore.title)
+        self.slack_client.send_message("hey {0}, do {1}".format(chore.user.name, chore.title),
+                                       attachments=self.generate_json(chore))
 
         chore.alert()
 
@@ -75,11 +76,13 @@ class Manger(object):
 
     @staticmethod
     def generate_json(chore):
-        return render_template('chore_buttons.json',
-                               user=chore.user.name,
-                               callback_id=chore.name,
-                               title=chore.title
-                               )
+        button_str = ""
+        with open('chore_buttons.json') as f:
+            button_str = f.read()
+        if button_str == '':
+            raise Exception("no button string found")
+        button_str = button_str % chore.name
+        return json.loads(button_str)
 
 
 class ChoreState:
