@@ -7,7 +7,7 @@ class App:
     manager = Manger(Bot())
 
     @staticmethod
-    @app.route('/api', methods=['POST'])
+    @app.route('/chore/api', methods=['POST'])
     def api():
         print(request.form)
 

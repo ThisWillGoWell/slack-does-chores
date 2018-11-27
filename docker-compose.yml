@@ -2,9 +2,36 @@ version: '2'
 services:
   server:
     restart: always
-    build: .
-    ports:
-      - 8080:8000
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     container_name: chore_server
     environment:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+  proxy:
+    container_name: chore_nginx
+    build:
+      context: docker
+      dockerfile: Dockerfile.proxy
+    volumes:
+      -  williamgowell_letsencrypt_certs:/etc/nginx/certs
+      -  williamgowell_letsencrypt_www:/var/www/letsencrypt
+
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+
+  letsencrypt:
+    container_name: chore
+    build:
+      context: docker
+      dockerfile: Dockerfile.certs
+    command: /bin/true
+    volumes:
+      -  williamgowell_letsencrypt_certs:/etc/letsencrypt
+      -  williamgowell_letsencrypt_www:/var/www/letsencrypt
+
+volumes:
+  williamgowell_letsencrypt_certs:
+  williamgowell_letsencrypt_www:

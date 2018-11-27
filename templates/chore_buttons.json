@@ -1,0 +1,39 @@
+{
+    "text": "Reminder {{user}}, {{title}}",
+    "attachments": [
+        {
+            "callback_id": "{{callback_id}}",
+            "color": "#3AA3E3",
+            "fallback": "You are unable to choose a game",
+
+            "attachment_type": "default",
+            "actions": [
+                {
+                    "name": "complete",
+                    "text": "Chore Complete",
+                    "type": "button",
+                    "value": "complete"
+                },
+                {
+                    "name": "snooze",
+                    "text": "snooze",
+                    "type": "button",
+                    "value": "Snooze"
+                },
+                {
+                    "name": "pass",
+                    "text": "pass",
+                    "style": "danger",
+                    "type": "button",
+                    "value": "Pass",
+                    "confirm": {
+                        "title": "Are you sure?",
+                        "text": "You are going to pass on this chore",
+                        "ok_text": "Yes",
+                        "dismiss_text": "No"
+                    }
+                }
+            ]
+        }
+    ]
+}

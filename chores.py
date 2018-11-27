@@ -6,13 +6,17 @@ from datetime import datetime, timedelta
 from threading import Lock, Thread
 from time import sleep
 
-class Manger(object):
+from flask import render_template
 
+
+class Manger(object):
     def __init__(self, slack_client):
         self.slack_client = slack_client
         self.chores = {}
         self.users = {}
         self.chore_lock = Lock()
+        self.callback_id = 0
+        self.callbacks = {}
         self._populate()
         self.thread = Thread(target=self.run_alerts, daemon=True)
         self.thread.start()
@@ -38,12 +42,12 @@ class Manger(object):
                     if now > chore.next_alert:
                         self.chore_alert(chore)
 
-                if chore.state == ChoreState.alerted():
+                elif chore.state == ChoreState.alerted():
                     if now > chore.next_complete:
                         self.chore_failed(chore)
                     elif datetime.now() > chore.last_alert_at + timedelta(seconds=10):
                         self.chore_alert(chore)
-                if chore.state == ChoreState.complete():
+                elif chore.state == ChoreState.complete():
                     if now > chore.next_complete:
                         chore.reset()
 
@@ -58,6 +62,7 @@ class Manger(object):
     def chore_alert(self, chore):
         chore.state = ChoreState.alerted()
         self.slack_client.send_message("hey " + chore.user.name + " do " + chore.title)
+
         chore.alert()
 
     def chore_failed(self, chore):
@@ -67,6 +72,14 @@ class Manger(object):
     def chore_complete(self, chore):
         self.slack_client.send_message("chore " + chore.title + " marked as complete")
         chore.state = ChoreState.idle()
+
+    @staticmethod
+    def generate_json(chore):
+        return render_template('chore_buttons.json',
+                               user=chore.user.name,
+                               callback_id=chore.name,
+                               title=chore.title
+                               )
 
 
 class ChoreState:
@@ -104,6 +117,8 @@ class Chore(object):
 
     def alert(self):
         self.last_alert_at = datetime.now()
+        if self.next_complete < self.last_alert_at:
+            self.next_complete = self.complete_cron.get_next(datetime)
 
     def complete(self):
         self.next_complete = self.complete_cron.get_next(datetime)
