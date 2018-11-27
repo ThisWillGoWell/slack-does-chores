@@ -15,7 +15,7 @@ class App:
     def api():
         form_json = json.loads(request.form["payload"])
         App.app.logger.info(str(form_json))
-        App.manager.chore_complete()
+        App.manager.button_response(form_json)
         return Response(status=200)
 
     def __init__(self):
