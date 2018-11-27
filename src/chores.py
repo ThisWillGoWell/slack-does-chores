@@ -72,7 +72,7 @@ class Manger(object):
 
     def chore_complete(self, chore):
         self.slack_client.send_message("chore " + chore.title + " marked as complete")
-        chore.state = ChoreState.idle()
+        chore.state = ChoreState.complete()
 
     @staticmethod
     def generate_json(chore):
