@@ -16,7 +16,7 @@ class Bot(object):
             self.name = name
             self.real_name = real_name
 
-    def __init__(self):
+    def __init__(self, deafult_channel='general'):
         self.commands = {}
         self.slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
         self.users = {}
@@ -24,6 +24,13 @@ class Bot(object):
             info = self.slack_client.api_call("auth.test")
             self.bot_id = self.slack_client.api_call("auth.test")["user_id"]
             self._populate_users()
+            chennels = self.slack_client.api_call("channels.list")
+            self.default_channel = ""
+            for channel in chennels['channels']:
+                if channel['name'] == deafult_channel:
+                    self.default_channel = channel['id']
+            if self.default_channel == '':
+                raise Exception('channel not found')
             self.command_thread = threading.Thread(target=self._run_command_reader, daemon=True)
             self.command_thread.start()
             pass
@@ -72,7 +79,9 @@ class Bot(object):
                 self.send_message(message, channel)
                 print("Bot mentioned: ", message, 'channel: ', channel)
 
-    def send_message(self, msg, channel):
+    def send_message(self, msg, channel=''):
+        if channel == '':
+            channel = self.default_channel
         self.slack_client.api_call(
             "chat.postMessage",
             channel=channel,

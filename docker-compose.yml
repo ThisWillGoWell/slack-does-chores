@@ -1,0 +1,8 @@
+version: '2'
+services:
+  server:
+    restart: always
+    build: .
+    container_name: chore_server
+    environment:
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}

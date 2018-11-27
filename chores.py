@@ -35,14 +35,18 @@ class Manger(object):
             now = datetime.now()
             for chore in self.chores.values():
                 if chore.state == ChoreState.idle():
-                    if now > chore.alert_at.get_next(datetime):
+                    if now > chore.next_alert:
                         self.chore_alert(chore)
 
                 if chore.state == ChoreState.alerted():
-                    if now > chore.complete_by.get_next(datetime):
+                    if now > chore.next_complete:
                         self.chore_failed(chore)
                     elif datetime.now() > chore.last_alert_at + timedelta(seconds=10):
                         self.chore_alert(chore)
+                if chore.state == ChoreState.complete():
+                    if now > chore.next_complete:
+                        chore.reset()
+
             self.chore_lock.release()
             sleep(1)
 
@@ -85,11 +89,11 @@ class Chore(object):
         self.name = name
         self.title = title
 
-        self.alert_at = croniter(alert_at)
-        self.next_alert = self.alert_at.get_next(datetime)
+        self.alert_cron = croniter(alert_at, datetime.now())
+        self.next_alert = self.alert_cron.get_next(datetime)
 
-        self.complete_by = croniter(complete_by)
-        self.next_complete = self.complete_by.get_next(datetime)
+        self.complete_cron = croniter(complete_by, datetime.now())
+        self.next_complete = self.complete_cron.get_next(datetime)
 
         self.assigned_to = assigned_to
         self.last_alert_at = datetime.now()
@@ -100,14 +104,14 @@ class Chore(object):
 
     def alert(self):
         self.last_alert_at = datetime.now()
-        self.next_alert = self.alert_at.get_next(datetime)
 
     def complete(self):
-        self.next_complete = self.complete_by.get_next(datetime)
+        self.next_complete = self.complete_cron.get_next(datetime)
         self.state = ChoreState.complete()
 
     def reset(self):
-        self.nex
+        self.next_complete = self.complete_cron.get_next(datetime)
+        self.next_alert = self.alert_cron.get_next(datetime)
 
 
 class User(object):
@@ -117,10 +121,3 @@ class User(object):
         self.slack_id = slack_id
 
 
-
-
-
-
-
-if __name__ == '__main__':
-    populate()

@@ -1,11 +1,10 @@
 from flask import Flask, request
 from chores import Manger
-from slack import SlackClient
-
+from slack import Bot
 
 class App:
     app = Flask(__name__)
-    manager = Manger(SlackClient)
+    manager = Manger(Bot())
 
     @staticmethod
     @app.route('/api', methods=['POST'])
