@@ -49,6 +49,7 @@ class Manger(object):
                         self.chore_alert(chore)
                 elif chore.state == ChoreState.complete():
                     if now > chore.next_complete:
+                        print("resetting chore")
                         chore.reset()
 
             self.chore_lock.release()
